@@ -54,11 +54,12 @@ def main(queries):
                 images[color_match] = [path]
 
     print("Done sorting \nCopying...")
+    os.makedirs("colors", exist_ok=True)
     for cat, paths in images.items():
-        os.makedirs(cat, exist_ok=True)
+        os.makedirs("colors/" + cat, exist_ok=True)
         i = 0
         for img in paths:
-            copyfile(img, cat + "/" + str(i) + ".jpg")
+            copyfile(img, "colors/" + cat + "/" + str(i) + ".jpg")
             i += 1
     print("Done!")
 
