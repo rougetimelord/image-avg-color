@@ -40,7 +40,7 @@ def _images_get_all_items(page):
 #Download Image Links
 def start(queries):
     for keyword in queries:
-        print("Searching for " + keyword + "\n")
+        print("Searching for " + keyword)
         items = []
         search = keyword.replace(' ', '%20')
         #make a search keyword  directory
@@ -53,7 +53,7 @@ def start(queries):
         raw_html = download(url)
         items = _images_get_all_items(raw_html)
         #print ("Image Links = "+str(items))
-        print("Total Image Links \n" + str(len(items)) + "\n")
+        print("Total Image Links: " + str(len(items)))
 
         print("Starting Download...")
 
@@ -79,6 +79,6 @@ def start(queries):
                 print("IOError" + str(e.errno))
 
             i += 1
-        print("done with " + keyword + "\n")
+        print("Done with " + keyword)
     print("Done getting images")
     return
