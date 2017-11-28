@@ -19,22 +19,47 @@ COLORS = {
     'pink': (255, 0, 128),
     'brown': (173, 115, 0),
     'black': (0, 0, 0),
-    'white': (255,255,255)
+    'white': (255, 255, 255)
 }
+
+def get_difference(img_color):
+    """Try to match the color with a color we know"""
+    #Because we use rgb we can use pythagoran theorem to find the distance and minimize it
+    #However it has to be weighted for humans
+    color_match = ""
+    dist = 3E3
+    for color, value in COLORS.items():
+        r_co = (img_color[0] + value[0]) / 2
+        r_del = math.pow(img_color[0] - value[0], 2)
+        g_del = math.pow(img_color[1] - value[1], 2)
+        b_co = 2 + ((255 - r_co) / 256)
+        b_del = math.pow(img_color[2] - value[2], 2)
+        t_del = math.sqrt(r_co * r_del + 4 * g_del + b_co * b_del)
+        if t_del < dist:
+            dist = t_del
+            color_match = color
+    return color_match
 
 def main(queries):
     """Do the thing"""
     print("Getting images")
-    #First we download the images
-    download.start(queries)
+    #Check that images aren't already downloaded
+    down_queries = []
+    images_done = os.listdir("images")
+    for term in queries:
+        if not term in images_done:
+            down_queries.append(term)
+    #First we download the images, if we need any
+    if down_queries:
+        download.start(down_queries)
     images = {}
     print("Sorting images")
     #Go through the folders of everything we searched for
     for dire in queries:
         #Find all the images in the folder
-        files = os.listdir(dire)
+        files = os.listdir("images/" + dire)
         for file in files:
-            path = dire + "/" + file
+            path = "images/" + dire + "/" + file
             print("Crunching " + path)
             #Skip images that are too large or small
             if os.stat(path).st_size > 7E6:
@@ -45,20 +70,8 @@ def main(queries):
                 continue
             #Get color
             color_t = ColorThief(path)
-            img_color = color_t.get_color(quality=10)
-            #Try to match the color we got with a color we know
-            #Because we use rgb we can use pythagoran theorem to find the distance and minimize it
-            #TODO: use weighted algorithim
-            color_match = ""
-            dist = 1E3
-            for color, value in COLORS.items():
-                r_del = math.pow((img_color[0] - value[0]), 2)
-                g_del = math.pow((img_color[1] - value[1]), 2)
-                b_del = math.pow((img_color[2] - value[2]), 2)
-                t_del = math.sqrt(r_del + g_del + b_del)
-                if t_del < dist:
-                    dist = t_del
-                    color_match = color
+            img_color = color_t.get_color(quality=5)
+            color_match = get_difference(img_color)
             print("Got " + color_match)
             #Add the image to the stack of images in the matched color
             if color_match in images:
