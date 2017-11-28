@@ -6,8 +6,7 @@ import urllib.error
 def _download(url):
     try:
         headers = {}
-        headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1) " \
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+        headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
         req = urllib.request.Request(url, headers=headers)
         resp = urllib.request.urlopen(req)
         resp_data = str(resp.read())
@@ -32,7 +31,7 @@ def _images_get_next_item(html):
 
 def _images_get_all_items(page):
     items = []
-    while True:
+    while page:
         next_img = _images_get_next_item(page)
         if next_img[0] == "no_links":
             break
@@ -50,12 +49,10 @@ def start(queries):
         search = keyword.replace(' ', '%20')
         #make the keyword url sanitized
         try:
-            os.makedirs(keyword, exist_ok=True)
+            os.makedirs("images/" + keyword, exist_ok=True)
         except OSError as error:
             raise
-        url = 'https://www.google.com/search?q=' + search + \
-            '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch&sa=X&" \
-            "ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg'
+        url = 'https://www.google.com/search?q=' + search + '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg'
         #Get the html of the google images page then search it for links
         raw_html = _download(url)
         items = _images_get_all_items(raw_html)
@@ -69,8 +66,7 @@ def start(queries):
                 req = urllib.request.Request(
                     link,
                     headers={
-                        "User-Agent": "Mozilla/5.0 (X11; Linux i686)" \
-                        " AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
+                        "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
                         }
                 )
                 res = urllib.request.urlopen(req, None, 15)
