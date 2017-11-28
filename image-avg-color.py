@@ -16,14 +16,13 @@ COLORS = {
     'purple': (128, 0, 255),
     'pink': (255, 0, 128),
     'brown': (173, 115, 0),
-    'white': (255, 255, 255),
     'black': (0, 0, 0)
 }
 
 def main(queries):
     print("Getting images")
     images = {}
-    #download.start(queries)
+    download.start(queries)
     print("Sorting images")
     for dir in queries:
         files = os.listdir(dir)
@@ -53,8 +52,9 @@ def main(queries):
                 images[color_match].append(path)
             else:
                 images[color_match] = [path]
+
     print("Done sorting \n Copying...")
-    for cat, paths in images:
+    for cat, paths in images.items():
         os.makedirs(cat, exist_ok=True)
         i = 0
         for img in paths:
@@ -63,6 +63,5 @@ def main(queries):
 
 if __name__ == "__main__":
     print("Queries: \n")
-    #QUE = input().split(",")
-    QUE = ['beach']
+    QUE = input().split(",")
     main(QUE)
