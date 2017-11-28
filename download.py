@@ -45,10 +45,9 @@ def start(queries):
         search = keyword.replace(' ', '%20')
         #make a search keyword  directory
         try:
-            os.makedirs(keyword)
+            os.makedirs(keyword, exist_ok=True)
         except OSError as e:
-            if e.errno != 17:
-                raise
+            raise
         url = 'https://www.google.com/search?q=' + search + '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg'
         raw_html = download(url)
         items = _images_get_all_items(raw_html)
@@ -73,12 +72,15 @@ def start(queries):
                 print("HTTPError " + str(e.code))
 
             except urllib.error.URLError as e:
-                print("URLError" + str(e.errno))
+                print("URLError " + str(e))
 
             except IOError as e:   #If there is any IOError
-                print("IOError" + str(e.errno))
+                print("IOError " + str(e))
+
+            except Exception as e:
+                print("Other error " + str(e))
 
             i += 1
-        print("Done with " + keyword)
+        print("Done with " + keyword + "\n")
     print("Done getting images")
     return

@@ -63,6 +63,6 @@ def main(queries):
     print("Done!")
 
 if __name__ == "__main__":
-    print("Queries: \n")
+    print("Queries:")
     QUE = input().split(",")
     main(QUE)
