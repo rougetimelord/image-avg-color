@@ -24,10 +24,10 @@ def main(queries):
     images = {}
     download.start(queries)
     print("Sorting images")
-    for dir in queries:
-        files = os.listdir(dir)
+    for dire in queries:
+        files = os.listdir(dire)
         for file in files:
-            path = dir + "/" + file
+            path = dire + "/" + file
             print("Crunching " + path)
             if os.stat(path).st_size > 7E6:
                 print("Skipping big file")
@@ -36,7 +36,7 @@ def main(queries):
                 print("Skipping small file")
                 continue
             color_t = ColorThief(path)
-            img_color = color_t.get_color(quality=5)
+            img_color = color_t.get_color(quality=10)
             color_match = ""
             dist = 1E3
             for color, value in COLORS.items():
@@ -53,12 +53,13 @@ def main(queries):
             else:
                 images[color_match] = [path]
 
-    print("Done sorting \n Copying...")
+    print("Done sorting \nCopying...")
     for cat, paths in images.items():
         os.makedirs(cat, exist_ok=True)
         i = 0
         for img in paths:
-            copyfile(img, cat + "/" + i + ".jpg")
+            copyfile(img, cat + "/" + str(i) + ".jpg")
+            i += 1
     print("Done!")
 
 if __name__ == "__main__":
