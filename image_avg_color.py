@@ -65,19 +65,19 @@ def main(queries):
         files = os.listdir("images/" + dire)
         for file in files:
             path = "images/" + dire + "/" + file
-            print("Crunching " + path)
+            print("Crunching " + path, end='', flush=True)
             #Skip images that are too large or small
             if os.stat(path).st_size > 7E6:
-                print("Skipping big file")
+                print("            Skipping big file")
                 continue
             elif os.stat(path).st_size < 6.6E4:
-                print("Skipping small file")
+                print("            Skipping small file")
                 continue
             #Get color
             color_t = ColorThief(path)
             img_color = color_t.get_color(quality=5)
             color_match = get_difference(img_color)
-            print("Got " + color_match)
+            print("            Got " + color_match)
             #Add the image to the stack of images in the matched color
             if color_match in images:
                 images[color_match].append(path)
