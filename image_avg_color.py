@@ -16,14 +16,26 @@ COLORS = {
     'teal': (0, 128, 255),
     'blue': (0, 0, 255),
     'purple': (128, 0, 255),
-    'pink': (255, 0, 128),
-    'brown': (173, 115, 0),
-    'black': (0, 0, 0),
-    'white': (255, 255, 255)
+    'pink': (255, 0, 128)
 }
+
+def _check_images(queries):
+    down_queries = []
+    images_done = os.listdir("images")
+    for term in queries:
+        if not term in images_done:
+            down_queries.append(term)
+    #First we download the images, if we need any
+    if down_queries:
+        download.start(down_queries)
+    return
 
 def get_difference(img_color):
     """Try to match the color with a color we know"""
+    if img_color == (255, 255, 255):
+        return "white"
+    elif img_color == (0, 0, 0):
+        return "black"
     #Because we use rgb we can use pythagoran theorem to find the distance and minimize it
     #However it has to be weighted for humans
     color_match = ""
@@ -44,14 +56,7 @@ def main(queries):
     """Do the thing"""
     print("Getting images")
     #Check that images aren't already downloaded
-    down_queries = []
-    images_done = os.listdir("images")
-    for term in queries:
-        if not term in images_done:
-            down_queries.append(term)
-    #First we download the images, if we need any
-    if down_queries:
-        download.start(down_queries)
+    _check_images(queries)
     images = {}
     print("Sorting images")
     #Go through the folders of everything we searched for
