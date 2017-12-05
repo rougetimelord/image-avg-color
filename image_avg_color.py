@@ -16,7 +16,9 @@ COLORS = {
     'teal': (0, 128, 255),
     'blue': (0, 0, 255),
     'purple': (128, 0, 255),
-    'pink': (255, 0, 128)
+    'pink': (255, 0, 128),
+    'black': (0, 0, 0),
+    'white': (255, 255, 255)
 }
 
 def _check_images(queries):
@@ -91,7 +93,9 @@ def main(queries):
         os.makedirs("colors/" + cat, exist_ok=True)
         i = 0
         for img in paths:
-            copyfile(img, "colors/" + cat + "/" + str(i) + ".jpg")
+            f_t = img[-4:]
+            print(img + " is file type " + f_t)
+            copyfile(img, "colors/" + cat + "/" + str(i) + f_t)
             i += 1
     print("Done!")
 

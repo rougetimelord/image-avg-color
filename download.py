@@ -12,7 +12,7 @@ def _download(url):
         resp_data = str(resp.read())
         return resp_data
 
-    except urllib.error.HTTPError as error:  #If there is any HTTPError
+    except urllib.error.HTTPError as error:
         print("HTTPError " + str(error.code))
 
     except urllib.error.URLError as error:
@@ -51,10 +51,7 @@ def start(queries):
         items = []
         search = keyword.replace(' ', '%20')
         #make the keyword url sanitized
-        try:
-            os.makedirs("images/" + keyword, exist_ok=True)
-        except OSError as error:
-            raise
+        os.makedirs("images/" + keyword, exist_ok=True)
         url = 'https://www.google.com/search?q=' + search + '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg'
         #Get the html of the google images page then search it for links
         raw_html = _download(url)
