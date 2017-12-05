@@ -27,6 +27,7 @@ def _check_images(queries):
             down_queries.append(term)
     #First we download the images, if we need any
     if down_queries:
+        print("Getting images")
         download.start(down_queries)
     return
 
@@ -54,7 +55,6 @@ def get_difference(img_color):
 
 def main(queries):
     """Do the thing"""
-    print("Getting images")
     #Check that images aren't already downloaded
     _check_images(queries)
     images = {}
