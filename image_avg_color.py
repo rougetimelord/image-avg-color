@@ -1,6 +1,6 @@
 """Searches google for images then sorts them by color"""
 import os
-from shutil import copyfile
+from shutil import copyfile, rmtree
 import math
 from colorthief import ColorThief
 import download
@@ -65,13 +65,13 @@ def main(queries):
         files = os.listdir("images/" + dire)
         for file in files:
             path = "images/" + dire + "/" + file
-            print("Crunching " + path, end='', flush=True)
+            print("Crunching " + path, end='    ', flush=True)
             #Skip images that are too large or small
             if os.stat(path).st_size > 7E6:
-                print("            Skipping big file")
+                print("Skipping big file")
                 continue
             elif os.stat(path).st_size < 6.6E4:
-                print("            Skipping small file")
+                print("Skipping small file")
                 continue
             #Get color
             color_t = ColorThief(path)
@@ -85,6 +85,7 @@ def main(queries):
                 images[color_match] = [path]
 
     print("Done sorting \nCopying...")
+    rmtree("./colors")
     os.makedirs("colors", exist_ok=True)
     #Go through all the colors we did find and copy the images
     for cat, paths in images.items():
@@ -98,5 +99,6 @@ def main(queries):
 if __name__ == "__main__":
     #If this is the main instance run, otherwise you have to call main
     print("Queries:")
-    QUE = input().split(",")
+    QUE = input().replace(", ", ",").split(",")
+    print(str(QUE))
     main(QUE)

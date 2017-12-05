@@ -11,23 +11,26 @@ def _download(url):
         resp = urllib.request.urlopen(req)
         resp_data = str(resp.read())
         return resp_data
-    except Exception as error:
-        print(str(error))
+
+    except urllib.error.HTTPError as error:  #If there is any HTTPError
+        print("HTTPError " + str(error.code))
+
+    except urllib.error.URLError as error:
+        print("URLError " + str(error))
 
 def _images_get_next_item(html):
     start_line = html.find('rg_di')
     if start_line == -1:
         #If no links are found then give an error!
-        end_quote = 0
+        end_content = 0
         link = "no_links"
-        return link, end_quote
     else:
         #Search through the html for images and take the links
         start_line = html.find('"class="rg_meta"')
         start_content = html.find('"ou"', start_line+1)
         end_content = html.find(',"ow"', start_content+1)
-        content_raw = str(html[start_content+6:end_content-1])
-        return (content_raw, end_content)
+        link = str(html[start_content+6:end_content-1])
+    return (link, end_content)
 
 def _images_get_all_items(page):
     items = []
@@ -62,6 +65,7 @@ def start(queries):
         #Also skip the image if anythin is wrong
         i = 0
         for link in items:
+            print('Getting image ' + str(i + 1), end='    ', flush=True)
             try:
                 req = urllib.request.Request(
                     link,
@@ -71,7 +75,11 @@ def start(queries):
                 )
                 res = urllib.request.urlopen(req, None, 15)
                 #Create a jpg dile and write the image binary data to it
-                with open("images/" + keyword + "/" + str(i) + ".jpg", 'wb') as file:
+                f_t = "." + res.info()['Content-Type'][6:]
+                if f_t == ".jpeg":
+                    f_t = ".jpg"
+                print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
+                with open("images/" + keyword + "/" + str(i) + f_t, 'wb') as file:
                     data = res.read()
                     file.write(data)
                 res.close()
@@ -84,9 +92,6 @@ def start(queries):
 
             except IOError as error:   #If there is any IOError
                 print("IOError " + str(error))
-
-            except Exception as error:
-                print("Other error " + str(error))
 
             i += 1
         print("Done with " + keyword + "\n")
