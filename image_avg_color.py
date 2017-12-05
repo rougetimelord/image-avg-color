@@ -1,6 +1,7 @@
 """Searches google for images then sorts them by color"""
 import os
 from shutil import copyfile, rmtree
+from time import sleep
 import math
 from colorthief import ColorThief
 import download
@@ -77,7 +78,7 @@ def main(queries):
             color_t = ColorThief(path)
             img_color = color_t.get_color(quality=5)
             color_match = get_difference(img_color)
-            print("            Got " + color_match)
+            print("Got " + color_match)
             #Add the image to the stack of images in the matched color
             if color_match in images:
                 images[color_match].append(path)
@@ -85,7 +86,8 @@ def main(queries):
                 images[color_match] = [path]
 
     print("Done sorting \nCopying...")
-    rmtree("./colors")
+    rmtree("./colors/*")
+    sleep(100)
     os.makedirs("colors", exist_ok=True)
     #Go through all the colors we did find and copy the images
     for cat, paths in images.items():
