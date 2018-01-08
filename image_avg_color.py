@@ -53,7 +53,12 @@ def get_difference(img_color):
         if t_del < dist:
             dist = t_del
             color_match = color
-    return color_match
+    if dist <= 500:
+        return color_match
+    elif dist <= 1E3:
+        return color_match + 'ish'
+    else:
+        return 'unsorted'
 
 def main(queries):
     """Do the thing"""
