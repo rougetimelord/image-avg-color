@@ -31,6 +31,7 @@ def _check_images(queries):
     if down_queries:
         print("Getting images")
         google_download.start(down_queries)
+        tumblr_download.start(down_queries)
     return
 
 def get_difference(img_color):
