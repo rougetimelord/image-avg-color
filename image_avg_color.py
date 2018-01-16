@@ -4,7 +4,6 @@ from shutil import copyfile
 import math
 from colorthief import ColorThief
 import google_download
-from key import tumblr.key
 
 #Set up the colors we want to check
 COLORS = {

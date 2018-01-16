@@ -76,7 +76,7 @@ def start(queries):
                 if f_t == ".jpeg":
                     f_t = ".jpg"
                 print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
-                with open("images/" + keyword + "/" + str(i) + f_t, 'wb') as file:
+                with open("images/" + keyword + "/google_" + str(i) + f_t, 'wb') as file:
                     data = res.read()
                     file.write(data)
                 res.close()
