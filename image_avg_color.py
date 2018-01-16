@@ -3,7 +3,7 @@ import os
 from shutil import copyfile
 import math
 from colorthief import ColorThief
-import download
+import google_download
 
 #Set up the colors we want to check
 COLORS = {
@@ -30,7 +30,7 @@ def _check_images(queries):
     #First we download the images, if we need any
     if down_queries:
         print("Getting images")
-        download.start(down_queries)
+        google_download.start(down_queries)
     return
 
 def get_difference(img_color):
