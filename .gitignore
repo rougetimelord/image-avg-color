@@ -6,3 +6,5 @@
 *.png
 *.gif
 key.py
+images/*
+colors/*

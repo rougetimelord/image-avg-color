@@ -47,7 +47,7 @@ def _images_get_all_items(page):
 def start(queries):
     """Do the thing"""
     for keyword in queries:
-        print("Searching for " + keyword)
+        print("Searching for " + keyword + " on Google")
         items = []
         search = keyword.replace(' ', '%20')
         #make the keyword url sanitized
@@ -56,13 +56,13 @@ def start(queries):
         #Get the html of the google images page then search it for links
         raw_html = _download(url)
         items = _images_get_all_items(raw_html)
-        print("Total Image Links: " + str(len(items)))
+        print("Total Google Image Links: " + str(len(items)))
         print("Starting Download...")
         #Save imgaes to their directories
         #Also skip the image if anythin is wrong
         i = 0
         for link in items:
-            print('Getting image ' + str(i + 1), end='    ', flush=True)
+            print('Getting image ' + str(i + 1) + ' from Google', end='    ', flush=True)
             try:
                 req = urllib.request.Request(
                     link,
@@ -72,10 +72,18 @@ def start(queries):
                 )
                 res = urllib.request.urlopen(req, None, 15)
                 #Create a jpg dile and write the image binary data to it
-                f_t = "." + res.info()['Content-Type'][6:]
-                if f_t == ".jpeg":
-                    f_t = ".jpg"
-                print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
+                try:
+                    f_t = "." + res.info()['Content-Type'][6:].split(' ')[0]
+                    if f_t[-1] == ";":
+                        f_t = f_t[0:-1]
+                    if f_t == ".jpeg":
+                        f_t = ".jpg"
+                    elif f_t == ".tml":
+                        continue
+                    print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
+                except TypeError as e:
+                    print(str(e) + ' happened')
+                    continue
                 with open("images/" + keyword + "/google_" + str(i) + f_t, 'wb') as file:
                     data = res.read()
                     file.write(data)
@@ -91,6 +99,6 @@ def start(queries):
                 print("IOError " + str(error))
 
             i += 1
-        print("Done with " + keyword + "\n")
-    print("Done getting images")
+        print("Done with " + keyword + " from google\n")
+    print("Done getting google images")
     return

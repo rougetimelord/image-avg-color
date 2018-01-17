@@ -2,8 +2,10 @@
 import os
 from shutil import copyfile
 import math
+from multiprocessing import Process
 from colorthief import ColorThief
 import google_download
+import tumblr_download
 
 #Set up the colors we want to check
 COLORS = {
@@ -30,8 +32,14 @@ def _check_images(queries):
     #First we download the images, if we need any
     if down_queries:
         print("Getting images")
-        google_download.start(down_queries)
-        tumblr_download.start(down_queries)
+        google_que = down_queries[:]
+        tumblr_que =down_queries[:]
+        google_p = Process(target=google_download.start, args=(google_que,))
+        tumblr_p = Process(target=tumblr_download.start, args=(tumblr_que,))
+        tumblr_p.start()
+        google_p.start()
+        tumblr_p.join()
+        google_p.join()
     return
 
 def get_difference(img_color):

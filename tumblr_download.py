@@ -20,7 +20,6 @@ def _download(url):
 
 def _get_images(url):
     data = json.loads(_download(url))
-    print(data.keys())
     post_data = data['response']
     items = []
     i = 1
@@ -45,16 +44,24 @@ def start(queries):
         print("Starting Download... \n")
         i = 0
         for link in links:
-            print('Getting image ' + str(i + 1), end='    ', flush=True)
+            print('Getting image ' + str(i + 1) + ' from Tumblr', end='    ', flush=True)
             try:
                 req = urllib.request.Request(link)
                 res = urllib.request.urlopen(req, None, 15)
                 #Create a jpg dile and write the image binary data to it
-                f_t = "." + res.info()['Content-Type'][6:]
-                f_t = f_t.split(' ')[0]
-                if f_t == ".jpeg":
-                    f_t = ".jpg"
-                print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
+                try:
+                    f_t = "." + res.info()['Content-Type'][6:].split(' ')[0]
+                    if f_t[-1] == ";":
+                        f_t = f_t[0:-1]
+                    if f_t == ".jpeg":
+                        f_t = ".jpg"
+                    elif f_t == ".tml":
+                        continue
+                    print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
+                except TypeError as e:
+                    print(str(e) + ' happened')
+                    continue
+
                 with open("images/" + tag + "/tumblr_" + str(i) + f_t, 'wb') as file:
                     data = res.read()
                     file.write(data)
@@ -70,8 +77,6 @@ def start(queries):
                 print("IOError " + str(error))
 
             i += 1
-        print("Done with " + tag + "\n")
+        print("Done with " + tag + " from tumblr\n")
     print("Done getting tumblr images")
     return
-
-start(['neon'])
