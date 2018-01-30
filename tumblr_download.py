@@ -1,6 +1,7 @@
 """Download images from tumblr"""
 import os
 import json
+import re
 import urllib.request
 import urllib.error
 from key import tumblr_key as key
@@ -46,27 +47,35 @@ def start(queries):
         for link in links:
             print('Getting image ' + str(i + 1) + ' from Tumblr', end='    ', flush=True)
             try:
+                head = urllib.request.Request(link, method="HEAD")
+                headers = urllib.request.urlopen(head).info()
+                f_t = "." + headers['Content-Type'][6:].split(' ')[0]
+                if f_t[-1] == ";":
+                    f_t = f_t[0:-1]
+                if f_t == ".jpeg":
+                    f_t = ".jpg"
+                if not re.search(r'.(jpg|png|gif)$', f_t):
+                    print("Skipping non image")
+                    continue
+                elif float(headers['Content-Length']) > 7E6:
+                    print("Skipping big file")
+                    continue
+                elif float(headers['Content-Length']) < 6.6E4:
+                    print("Skipping small file")
+                    continue
+                print("Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
                 req = urllib.request.Request(link)
                 res = urllib.request.urlopen(req, None, 15)
-                #Create a jpg dile and write the image binary data to it
-                try:
-                    f_t = "." + res.info()['Content-Type'][6:].split(' ')[0]
-                    if f_t[-1] == ";":
-                        f_t = f_t[0:-1]
-                    if f_t == ".jpeg":
-                        f_t = ".jpg"
-                    elif f_t == ".tml":
-                        continue
-                    print("Size: " + str(res.info()['Content-Length']) + "B    File type: " + f_t)
-                except TypeError as e:
-                    print(str(e) + ' happened')
-                    continue
-
+                #Create a jpg file and write the image binary data to it
                 with open("images/" + tag + "/tumblr_" + str(i) + f_t, 'wb') as file:
                     data = res.read()
                     file.write(data)
                 res.close()
 
+            except TypeError as e:
+                print(str(e) + ' happened')
+                continue
+                
             except urllib.error.HTTPError as error:  #If there is any HTTPError
                 print("HTTPError " + str(error.code))
 

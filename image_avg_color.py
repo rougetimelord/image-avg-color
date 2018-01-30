@@ -82,13 +82,6 @@ def main(queries):
         for file in files:
             path = "images/" + dire + "/" + file
             print("Crunching " + path, end='    ', flush=True)
-            #Skip images that are too large or small
-            if os.stat(path).st_size > 7E6:
-                print("Skipping big file")
-                continue
-            elif os.stat(path).st_size < 6.6E4:
-                print("Skipping small file")
-                continue
             #Get color
             color_t = ColorThief(path)
             img_color = color_t.get_color(quality=5)
