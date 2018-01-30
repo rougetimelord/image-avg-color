@@ -1,5 +1,5 @@
 # image-avg-color
-searches google for images, then downloads and sorts them by color
+searches google and tumblr for images, then downloads and tries to sort them by color
 
 ( super slow, get a coffee while you wait )
 
