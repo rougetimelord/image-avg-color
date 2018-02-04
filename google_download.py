@@ -80,7 +80,7 @@ def start(queries):
                 elif float(headers['Content-Length']) < 6.6E4:
                     print("Skipping small file " + str(i + 1) + " from Google")
                     continue
-                print("Stats for Google image " + str(i) + " Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
+                print("Stats for Google image " + str(i) + "\n    Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
                 req = urllib.request.Request(link)
                 res = urllib.request.urlopen(req, None, 15)
                 #Create a jpg file and write the image binary data to it
