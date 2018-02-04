@@ -33,7 +33,7 @@ def _check_images(queries):
     if down_queries:
         print("Getting images")
         google_que = down_queries[:]
-        tumblr_que =down_queries[:]
+        tumblr_que = down_queries[:]
         google_p = Process(target=google_download.start, args=(google_que,))
         tumblr_p = Process(target=tumblr_download.start, args=(tumblr_que,))
         tumblr_p.start()

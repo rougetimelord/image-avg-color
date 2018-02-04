@@ -55,12 +55,15 @@ def start(queries):
                     f_t = ".jpg"
                 if not re.search(r'.(jpg|png|gif)$', f_t):
                     print("Skipping non image " + str(i + 1) + " from tumblr")
+                    i += 1
                     continue
                 elif float(headers['Content-Length']) > 7E6:
                     print("Skipping big file " + str(i + 1) + " from tumblr")
+                    i += 1
                     continue
                 elif float(headers['Content-Length']) < 6.6E4:
                     print("Skipping small file " + str(i + 1) + " from tumblr")
+                    i += 1
                     continue
                 print("Stats for tumblr image " + str(i) + "\n    Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
                 req = urllib.request.Request(link)
