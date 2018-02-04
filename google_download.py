@@ -57,13 +57,12 @@ def start(queries):
         #Get the html of the google images page then search it for links
         raw_html = _download(url)
         items = _images_get_all_items(raw_html)
-        print("Total Google Image Links: " + str(len(items)))
-        print("Starting Download...")
+        print("Total Google Image Links: " + str(len(items)) + " \nStarting Download...")
         #Save imgaes to their directories
         #Also skip the image if anythin is wrong
         i = 0
         for link in items:
-            print('Getting image ' + str(i + 1) + ' from Google', end='    ', flush=True)
+            print('Getting image ' + str(i + 1) + ' from Google', flush=True)
             try:
                 head = urllib.request.Request(link, method="HEAD")
                 headers = urllib.request.urlopen(head).info()
@@ -73,21 +72,16 @@ def start(queries):
                 if f_t == ".jpeg":
                     f_t = ".jpg"
                 if not re.search(r'.(jpg|png|gif)$', f_t):
-                    print("Skipping non image")
+                    print("Skipping non image " + str(i + 1) + " from Google")
                     continue
                 elif float(headers['Content-Length']) > 7E6:
-                    print("Skipping big file")
+                    print("Skipping big file " + str(i + 1) + " from Google")
                     continue
                 elif float(headers['Content-Length']) < 6.6E4:
-                    print("Skipping small file")
+                    print("Skipping small file " + str(i + 1) + " from Google")
                     continue
-                print("Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
-                req = urllib.request.Request(
-                        link,
-                        headers={
-                            "User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
-                            }
-                    )
+                print("Stats for Google image " + str(i) + " Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
+                req = urllib.request.Request(link)
                 res = urllib.request.urlopen(req, None, 15)
                 #Create a jpg file and write the image binary data to it
                 with open("images/" + keyword + "/google_" + str(i) + f_t, 'wb') as file:
@@ -96,19 +90,19 @@ def start(queries):
                 res.close()
 
             except TypeError as e:
-                print(str(e) + ' happened')
+                print(str(e) + " on Google image " + str(i+1))
                 continue
                 
             except urllib.error.HTTPError as error:  #If there is any HTTPError
-                print("HTTPError " + str(error.code))
+                print("Google image " + str(i+1) + " hit HTTPError: " + str(error.code))
 
             except urllib.error.URLError as error:
-                print("URLError " + str(error))
+                print("Google image " + str(i+1) + " hit URLError: " + str(error))
 
             except IOError as error:   #If there is any IOError
-                print("IOError " + str(error))
+                print("Google image " + str(i+1) + " hit IOError: " + str(error))
 
             i += 1
-        print("Done with " + keyword + " from google\n")
-    print("Done getting google images")
+        print("Done with " + keyword + " from Google")
+    print("Done getting Google images")
     return

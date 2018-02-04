@@ -41,11 +41,10 @@ def start(queries):
         os.makedirs("images/" + tag, exist_ok=True)
         url = "https://api.tumblr.com/v2/tagged?tag=" + search + "&api_key=" + key
         links = _get_images(url)
-        print("Total Image Links: \n" + str(len(links)))
-        print("Starting Download... \n")
+        print("Total Image Links: " + str(len(links)) + "\nStarting Download...")
         i = 0
         for link in links:
-            print('Getting image ' + str(i + 1) + ' from Tumblr', end='    ', flush=True)
+            print("Getting image " + str(i + 1) + " from tumblr", flush=True)
             try:
                 head = urllib.request.Request(link, method="HEAD")
                 headers = urllib.request.urlopen(head).info()
@@ -55,15 +54,15 @@ def start(queries):
                 if f_t == ".jpeg":
                     f_t = ".jpg"
                 if not re.search(r'.(jpg|png|gif)$', f_t):
-                    print("Skipping non image")
+                    print("Skipping non image " + str(i + 1) + " from tumblr")
                     continue
                 elif float(headers['Content-Length']) > 7E6:
-                    print("Skipping big file")
+                    print("Skipping big file " + str(i + 1) + " from tumblr")
                     continue
                 elif float(headers['Content-Length']) < 6.6E4:
-                    print("Skipping small file")
+                    print("Skipping small file " + str(i + 1) + " from tumblr")
                     continue
-                print("Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
+                print("Stats for tumblr image " + str(i) + " Size: " + str(headers['Content-Length']) + "B    File type: " + f_t)
                 req = urllib.request.Request(link)
                 res = urllib.request.urlopen(req, None, 15)
                 #Create a jpg file and write the image binary data to it
@@ -73,19 +72,19 @@ def start(queries):
                 res.close()
 
             except TypeError as e:
-                print(str(e) + ' happened')
+                print(str(e) + " on tumblr image " + str(i+1))
                 continue
                 
             except urllib.error.HTTPError as error:  #If there is any HTTPError
-                print("HTTPError " + str(error.code))
+                print("Tumblr image " + str(i+1) + " hit HTTPError " + str(error.code))
 
             except urllib.error.URLError as error:
-                print("URLError " + str(error))
+                print("Tumblr image " + str(i+1) + " hit URLError: " + str(error))
 
             except IOError as error:   #If there is any IOError
-                print("IOError " + str(error))
+                print("Tumblr image " + str(i+1) + " hit IOError " + str(error))
 
             i += 1
-        print("Done with " + tag + " from tumblr\n")
+        print("Done with " + tag + " from tumblr")
     print("Done getting tumblr images")
     return
