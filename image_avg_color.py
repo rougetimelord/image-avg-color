@@ -3,7 +3,7 @@ import os
 from shutil import copyfile
 import math
 from multiprocessing import Process
-from colorthief import ColorThief
+from PIL import Image
 import google_download
 import tumblr_download
 
@@ -82,10 +82,30 @@ def main(queries):
         for file in files:
             path = "images/" + dire + "/" + file
             print("Crunching " + path, end='    ', flush=True)
-            #Get color
-            color_t = ColorThief(path)
-            img_color = color_t.get_color(quality=5)
-            color_match = get_difference(img_color)
+            try:
+                with open(path, 'rb') as f:
+                    pil_img = Image.open(f)
+                    pil_img = pil_img.convert("RGBA")
+                    #Get color
+                    colors = pil_img.getcolors(maxcolors=int(1.6e7))
+                    total_pix = 0
+                    for entry in colors:
+                        total_pix += entry[0]
+                    avg_red = 0
+                    avg_green = 0
+                    avg_blue = 0
+                    for entry in colors:
+                        weight = entry[0] / total_pix
+                        avg_red += entry[1][0] * weight
+                        avg_green += entry[1][1] * weight
+                        avg_blue += entry[1][2] * weight
+                    
+                    avg_color = (int(avg_red), int(avg_green), int(avg_blue))
+                    pil_img.close()
+            except TypeError as e:
+                    print(e)
+                    continue
+            color_match = get_difference(avg_color)
             print("Got " + color_match)
             #Add the image to the stack of images in the matched color
             if color_match in images:
@@ -98,7 +118,7 @@ def main(queries):
     #Go through all the colors we did find and copy the images
     for cat, paths in images.items():
         os.makedirs("colors/" + cat, exist_ok=True)
-        i = 0
+        i = len(os.listdir("colors/" + cat))
         for img in paths:
             f_t = img[-4:]
             print(img + " is file type " + f_t)
